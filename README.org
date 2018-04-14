@@ -1,0 +1,61 @@
+# -*- org-edit-src-content-indentation: 0; -*-
+#+TITLE: org-autoprop: Generate autocomplete lists for properties already in an org file
+
+* Purpose
+org-autoprop is a simple tool that suggests property values based on already
+included properties.
+
+Often times property values aren't consistent. For example, the following values
+might be used for the property :LOCATION: so later processing would treat them
+differently.
+
+- School
+- school
+- scool
+
+org-autoprop will suggest previously implemented property values to help
+mitigate this issue.
+
+* Installation
+
+org-autoprop (will be) on melpa and can be installed like this
+
+#+BEGIN_SRC emacs-lisp
+  (use-package org-autoprop
+    :ensure t)
+#+END_SRC
+
+* Usage
+Suppose you wanted to keep a record of students caught cheating. You might have
+a template that stores cheating events in a file called cheat.org and under the
+heading cheating students
+
+The org-autoprop version of the template will suggest student names in the same
+format as those already input.
+
+** Traditional Template
+#+BEGIN_SRC emacs-lisp
+  ("s" "Cheating" entry(file+headline "~/cheat.org" "Cheating Students") "* %^{Title}
+     :PROPERTIES:
+     :NAME: $^{Name}
+     :METHOD: %^{Method}
+     :DATE: %u
+     :END:
+     " 
+   :prepend t 
+   :empty-lines 1 
+   :created t)
+#+END_SRC
+** org-autoprop Template
+#+BEGIN_SRC emacs-lisp
+  ("s" "Cheating" entry(file+headline "~/cheat.org" "Cheating Students") "* %^{Title}
+     :PROPERTIES:
+     %(org-autoprop-format-list \"NAME\")
+     %(org-autoprop-format-list \"METHOD\")
+     :DATE: %u
+     :END:
+     " 
+   :prepend t 
+   :empty-lines 1 
+   :created t)
+#+END_SRC
